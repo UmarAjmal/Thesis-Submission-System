@@ -1,0 +1,257 @@
+<!-- app/templates/register.html -->
+{% extends "base.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+<div class="col-md-6 d-none d-md-block">
+    <img src="{{ url_for('static', filename='login_image.jpg') }}" alt="Login Image" class="img-fluid" style="border-radius: 10px; height: 100vh; object-fit: cover;">
+</div>
+
+{% block content %}
+<div class="container-fluid register-background">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-body p-4">
+                    <h2 class="mb-4 text-center fw-bold">Create an Account</h2>
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Role Selection -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">{{ form.role.label }}</label>
+                            {{ form.role(class="form-select", id="role") }}
+                            {% for error in form.role.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Name Field -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.name.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+                                {{ form.name(class="form-control", placeholder="Enter your full name") }}
+                            </div>
+                            {% for error in form.name.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Address Field -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.address.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-house"></i></span>
+                                {{ form.address(class="form-control", placeholder="Enter your address") }}
+                            </div>
+                            {% for error in form.address.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Phone Number Field -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.phone_no.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
+                                {{ form.phone_no(class="form-control", placeholder="Enter your phone number (optional)") }}
+                            </div>
+                            {% for error in form.phone_no.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- University Name (Authors) -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.university_name.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-building"></i></span>
+                                {{ form.university_name(class="form-control", placeholder="Enter your university name") }}
+                            </div>
+                            {% for error in form.university_name.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                                          
+                        <!-- Qualification (Reviewers) -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.qualification.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-award"></i></span>
+                                {{ form.qualification(class="form-control", placeholder="Enter your qualification") }}
+                            </div>
+                            {% for error in form.qualification.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Specialization (Reviewers) -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.specialization.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-gear"></i></span>
+                                {{ form.specialization(class="form-control", placeholder="Enter your specialization") }}
+                            </div>
+                            {% for error in form.specialization.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <!-- Blood Group (Authors) -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.blood_group.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-droplet"></i></span>
+                                {{ form.blood_group(class="form-control", placeholder="e.g., A+, O-") }}
+                            </div>
+                            {% for error in form.blood_group.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <!-- Max Papers to Review (Reviewers) - Initially Hidden -->
+                        <div class="mb-3 position-relative" id="maxPapersField" style="display: none;">
+                            <label class="form-label fw-semibold">{{ form.max_papers.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-file-earmark"></i></span>
+                                {{ form.max_papers(class="form-control", placeholder="Enter max number of papers to review") }}
+                            </div>
+                            {% for error in form.max_papers.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Email Field -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.gmail.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                                {{ form.gmail(class="form-control", placeholder="Enter your email address") }}
+                            </div>
+                            {% for error in form.gmail.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Password Field -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.password.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+                                {{ form.password(class="form-control", id="password", placeholder="Enter your password") }}
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-eye-slash" id="togglePassword" style="cursor: pointer;"></i>
+                                </span>
+                            </div>
+                            {% for error in form.password.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Confirm Password Field -->
+                        <div class="mb-3 position-relative">
+                            <label class="form-label fw-semibold">{{ form.confirm_password.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-lock-fill"></i></span>
+                                {{ form.confirm_password(class="form-control", id="confirmPassword", placeholder="Confirm your password") }}
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-eye-slash" id="toggleConfirmPassword" style="cursor: pointer;"></i>
+                                </span>
+                            </div>
+                            {% for error in form.confirm_password.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary btn-lg fw-semibold shadow-sm" type="submit">
+                                <i class="bi bi-person-plus"></i> Register
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to toggle visibility of the "Max Papers to Review" field -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var roleSelect = document.getElementById('role');
+        var maxPapersField = document.getElementById('maxPapersField');
+
+        function toggleMaxPapersField() {
+            if (roleSelect.value === 'reviewer') {
+                maxPapersField.style.display = 'block';
+            } else {
+                maxPapersField.style.display = 'none';
+            }
+        }
+
+        // Run the function on page load and whenever the role is changed
+        toggleMaxPapersField();
+        roleSelect.addEventListener('change', toggleMaxPapersField);
+    });
+</script>
+
+<script>
+    // Toggle visibility for Password Field
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        const passwordField = document.getElementById("password");
+        const icon = this;
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        }
+    });
+
+    // Toggle visibility for Confirm Password Field
+    document.getElementById("toggleConfirmPassword").addEventListener("click", function () {
+        const confirmPasswordField = document.getElementById("confirmPassword");
+        const icon = this;
+
+        if (confirmPasswordField.type === "password") {
+            confirmPasswordField.type = "text";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        } else {
+            confirmPasswordField.type = "password";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        }
+    });
+</script>
+
+{% endblock %}
+
+<!-- Add CSS for background image -->
+<style>
+    .register-background {
+        background-image: url("/static/textured-on-wet-white-paper-260nw-2480260135.webp");
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent to show background */
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+</style>

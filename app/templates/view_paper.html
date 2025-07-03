@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}
+    View Paper - {{ paper.title }}
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Full-page background styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;  /* Prevent scrolling */
+            background: url('{{ url_for('static', filename='submit.jpg') }}') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Flex container for layout */
+        .container-layout {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;  /* Ensures layout takes up the full height */
+            padding: 0 50px;
+            overflow: hidden;  /* Ensure content doesn't overflow */
+        }
+
+        /* Left Side: Heading */
+        .left-heading {
+            color: white;
+            font-size: 2.9rem;
+            font-weight: bold;
+            line-height: 1.2;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Right Side: Content Container */
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);  /* Slight transparency */
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 600px;
+            max-height: 700px;
+            overflow-y: auto;  /* Allow scrolling within the container if content is long */
+        }
+
+        /* Buttons Section */
+        .buttons-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* Styling for headings inside the form container */
+        .form-container h4, .form-container h5 {
+            margin-bottom: 10px;
+        }
+
+        /* Button customization */
+        .btn-custom {
+            border-radius: 30px;
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-layout">
+        <!-- Left Side: Heading -->
+        <div class="left-heading">
+            View Paper
+        </div>
+
+        <!-- Right Side: Paper Content -->
+        <div class="form-container">
+            <!-- Abstract Section -->
+            <div class="mb-4">
+                <h4 class="text-primary">Abstract</h4>
+                <p class="text-dark" style="font-size: 1.1rem;">{{ paper.abstract }}</p>
+            </div>
+
+            <!-- Keywords Section -->
+            <div class="mb-4">
+                <h5 class="text-secondary">Keywords</h5>
+                <p class="text-dark" style="font-size: 1.1rem;">{{ paper.keywords }}</p>
+            </div>
+
+            <!-- Paper Type Section -->
+            <div class="mb-4">
+                <h5 class="text-secondary">Type</h5>
+                <p class="text-dark" style="font-size: 1.1rem;">{{ paper.paper_type.capitalize() }}</p>
+            </div>
+
+            <!-- Buttons Section -->
+            <div class="buttons-container">
+                <a href="{{ url_for('routes.download_paper', paper_id=paper.id) }}" class="btn btn-success btn-lg btn-custom me-2">
+                    <i class="bi bi-download"></i> Download Paper
+                </a>
+
+                <!-- Back Button Logic -->
+                {% if current_user.role == 'Reviewer' %}
+                    <!-- If the user is a reviewer, show the "Back to Reviewer Panel" button -->
+                    <a href="{{ url_for('routes.reviewer_panel') }}" class="btn btn-secondary btn-lg btn-custom"><i class="bi bi-arrow-left"></i> Back to Reviewer Panel</a>
+                {% elif current_user.role == 'Author' %}
+                    <!-- If the user is an author, show the "Back to Author Panel" button -->
+                    <a href="{{ url_for('routes.author_panel') }}" class="btn btn-secondary btn-lg btn-custom"><i class="bi bi-arrow-left"></i> Back to Author Panel</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
+
+{% block navbar %}
+<!-- Leave the navbar block empty to hide it -->
+{% endblock %}

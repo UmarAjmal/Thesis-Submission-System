@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+Submit Review
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Submit Review for "{{ assignment.paper.title }}"</h2>
+
+    <!-- Display any flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-info">
+                {% for category, message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Review Submission Form -->
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <!-- Decision Field -->
+        <div class="mb-3">
+            <label for="decision" class="form-label">{{ form.decision.label }}</label>
+            {{ form.decision(class="form-select", id="decision") }}
+            {% for error in form.decision.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Rejection Reasons Field (Conditional Display) -->
+        <div class="mb-3" id="rejection_reasons_section" style="display:none;">
+            <label for="rejection_reasons" class="form-label">{{ form.rejection_reasons.label }}</label>
+            {{ form.rejection_reasons(class="form-control", rows="5") }}
+            {% for error in form.rejection_reasons.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Report Field -->
+        <div class="mb-3">
+            <label for="report" class="form-label">{{ form.report.label }}</label>
+            {{ form.report(class="form-control", rows="5") }}
+            {% for error in form.report.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+
+        <!-- Cancel Button -->
+        <a href="{{ url_for('routes.reviewer_panel') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<script>
+    // Show rejection reasons only if 'Accept with Revision' is selected
+    document.getElementById('decision').addEventListener('change', function () {
+        if (this.value === 'Accept with Revision') {
+            document.getElementById('rejection_reasons_section').style.display = 'block';
+        } else {
+            document.getElementById('rejection_reasons_section').style.display = 'none';
+        }
+    });
+
+    // Trigger the change event on page load to handle default state
+    document.getElementById('decision').dispatchEvent(new Event('change'));
+</script>
+
+{% endblock %}

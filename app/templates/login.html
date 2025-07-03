@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+<!-- Main container with two columns: image on the left and form on the right -->
+<div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+    <!-- Left Side: Image -->
+    <div class="col-md-6 d-none d-md-block">
+        <img src="{{ url_for('static', filename='login_image.jpg') }}" alt="Login Image" class="img-fluid" style="border-radius: 10px; height: 100vh; object-fit: cover;">
+    </div>
+
+    <!-- Right Side: Login Form with Shadow Effect -->
+    <div class="col-md-4" style="background-color: #ede8e8; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding: 30px;">
+        <h2 class="mb-4 text-center">Login</h2>
+        <form method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <!-- Email Field -->
+            <div class="mb-3">
+                {{ form.gmail.label(class="form-label") }}
+                {{ form.gmail(class="form-control", placeholder="Enter your email address") }}
+                {% for error in form.gmail.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <!-- Password Field -->
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control", placeholder="Enter your password") }}
+                {% for error in form.password.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <!-- Remember Me Checkbox -->
+            <div class="mb-3 form-check">
+                {{ form.remember(class="form-check-input", id="rememberMe") }}
+                <label class="form-check-label" for="rememberMe">Remember Me</label>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary btn-lg") }}
+            </div>
+            
+            <!-- Forgot Password Link -->
+            <div class="mt-3 text-center">
+                <a href="{{ url_for('routes.reset_password') }}" class="text-decoration-none">Forgot Password?</a>
+            </div>
+        </form>
+        
+        <!-- Social Login Options (Optional) -->
+        <hr class="my-4">
+        <div class="text-center">
+            <p>Or login with:</p>
+            <a href="#" class="btn btn-outline-secondary me-2">
+                <i class="bi bi-google"></i> Google
+            </a>
+            <a href="#" class="btn btn-outline-secondary">
+                <i class="bi bi-linkedin"></i> LinkedIn
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Hover Effect and Shadow -->
+<style>
+    .col-md-4:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+    }
+
+    /* Ensure the image stays on the left side, and its position does not change */
+    .d-none.d-md-block {
+        position: relative;
+    }
+
+    /* Remove the header with "Thesis Submission", "Login", and "Register" options */
+    header {
+        display: none;
+    }
+</style>
+
+{% endblock %}

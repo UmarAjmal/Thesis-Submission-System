@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reviewer Panel
+{% endblock %}
+
+{% block content %}
+<!-- Reviewer Panel Layout with Dark Mode and Side Navigation -->
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='13003646-A-light-blue-background.jpg') }}");
+        background-size: cover;
+        background-position: center center;
+        color: #ffffff;
+    }
+
+    .sidebar {
+        background-color: rgba(31, 31, 31, 0.8); 
+        width: 250px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+        border-right: 1px solid #333; 
+    }
+
+    .sidebar a {
+        color: #ffffff;
+        padding: 12px 20px;
+        text-decoration: none;
+        font-size: 18px;
+        display: block;
+        transition: background-color 0.3s ease;
+    }
+
+    .sidebar a:hover {
+        background-color: #575757;
+        border-radius: 5px;
+    }
+
+    .main-content {
+        margin-left: 250px;
+        padding: 30px;
+    }
+
+    .dashboard-card {
+        background-color: #333333;
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .card-content {
+        font-size: 18px;
+    }
+
+    .table th, .table td {
+        text-align: center;
+    }
+
+    .table-dark th {
+        background-color: #444444;
+        color: #ffffff;
+    }
+
+    .btn-primary, .btn-outline-primary, .btn-success, .btn-danger {
+        border-radius: 50px;
+    }
+
+    .btn-outline-primary:hover, .btn-success:hover, .btn-danger:hover {
+        border-color: #fff;
+        color: #fff;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .pagination .page-item .page-link {
+        color: #fff;
+    }
+
+    {% if request.endpoint == 'routes.reviewer_panel' %}
+        .navbar { display: none; }
+    {% endif %}
+</style>
+
+<!-- Side Navigation Bar -->
+<div class="sidebar">
+    <h3 class="text-center text-primary">Reviewer Panel</h3>
+    <a href="{{ url_for('routes.reviewer_panel') }}">Dashboard</a>
+    <a href="{{ url_for('routes.logout') }}">Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <h3>Assigned Theses</h3>
+    
+    {% if assignments %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Assigned Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignment in assignments %}
+                        <tr>
+                            <td>{{ assignment.paper.title }}</td>
+                            <td>{{ assignment.paper.author.name }}</td>
+                            <td>
+                                {% if assignment.status == 'Assigned' %}
+                                    <span class="badge bg-warning text-dark">{{ assignment.status }}</span>
+                                {% elif assignment.status == 'Completed' %}
+                                    <span class="badge bg-success">{{ assignment.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ assignment.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ assignment.assigned_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('routes.view_paper', paper_id=assignment.paper.id) }}" class="btn btn-sm btn-info">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="{{ url_for('routes.download_paper', paper_id=assignment.paper.id) }}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-download"></i> Download
+                                </a>
+                                {% if assignment.status != 'Completed' %}
+                                    <a href="{{ url_for('routes.submit_review', assignment_id=assignment.id) }}" class="btn btn-sm btn-success">
+                                        <i class="bi bi-pencil-square"></i> Submit Review
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-sm btn-secondary" disabled>
+                                        <i class="bi bi-check-circle"></i> Reviewed
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if assignments.pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if assignments.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('routes.reviewer_panel', page=assignments.prev_num) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                    {% endif %}
+
+                    {% for page_num in assignments.iter_pages() %}
+                        <li class="page-item {% if page_num == assignments.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('routes.reviewer_panel', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if assignments.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('routes.reviewer_panel', page=assignments.next_num) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            You have no assigned theses at the moment. Please check back later.
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

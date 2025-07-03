@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Thesis Submission System{% endblock %}</title>
+    <!-- Include Bootstrap CSS or any other stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include Bootstrap Icons if using icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Add custom CSS to hide navbar on submit_thesis page */
+        {% if request.endpoint == 'routes.submit_thesis' %}
+            .navbar {
+                display: none !important;
+            }
+        {% endif %}
+
+        /* Additional CSS to hide unwanted white bars if any */
+        .navbar-brand {
+            display: none; /* Hides the Thesis Submission link on non-homepages */
+        }
+        .white-bar {
+            display: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            {% if request.endpoint == 'home' %}
+                <a class="navbar-brand" href="{{ url_for('routes.home') }}">Thesis Submission</a>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('routes.logout') }}">Logout</a>
+                        </li>
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('routes.admin_panel') }}">Admin Panel</a>
+                            </li>
+                        {% elif current_user.role == 'author' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('routes.author_panel') }}">Author Panel</a>
+                            </li>
+                        {% elif current_user.role == 'reviewer' %}
+                            <!-- <li class="nav-item">-->
+                                <a class="nav-link" href="{{ url_for('routes.reviewer_panel') }}">Reviewer Panel</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        {% if request.endpoint == 'home' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('routes.login') }}">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('routes.register') }}">Register</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Include Bootstrap JS or any other scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
